@@ -1,4 +1,4 @@
-setwd("C:/Users/dpchu/Desktop")
+setwd("C:/Users/dpchu/Documents/GitHub/testrepo/beerreport")
 
 #Read in the data
 beers <- read.csv('beers.csv')
@@ -10,9 +10,9 @@ head(breweries)
 str(breweries)
 
 
+
 # A table displaying the number of breweries in each state.
 table(breweries$State)
-
 
 #Merge the 2 raw data files and do some basic cleaning
 names(breweries)[names(breweries)=="Brew_ID"]<-"Brewery_id"
@@ -53,3 +53,6 @@ ggplot(data=stateABV, aes(x=State, y=ABV, fill=ABV)) +
 ggplot(data=beermerge,aes(IBU,ABV))+geom_point(color="blue")+geom_smooth(method=lm,color="red")
 
 cor(IBU, ABV, use = "complete.obs",method=("pearson"))
+
+beermerge[which(beermerge$ABV > 0.12),c(4,6, 8,9,10)]
+str(beermerge)
