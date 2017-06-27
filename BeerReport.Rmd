@@ -9,29 +9,83 @@ output:
 
 #Introduction
 
-In recent decades, the craft beer market in the united states has exploded into an incredibly diverse landscape, with hundreds of different breweries all across the country brewing thousands of types of craft beers. As breweries have proliferated, states have developed regional tastes and breweries have reacted by specializing.  I have performed an analysis of 2410 US craft beers brewed in 558 breweries across all 50 states and the District of Columbia.
+In recent decades, the craft beer market in the United States has greatly diversified, with hundreds of different breweries all across the country brewing thousands of types of craft beers. As breweries have proliferated, states have developed regional tastes and breweries have reacted by specializing.  Below is an analysis of 2410 US craft beers brewed in 558 breweries across all 50 states and the District of Columbia.
 
-I have gathered a data set containing 2410 US craft beers brewed in 558 breweries, with information about the ABV and IBU of each beer.
+Gathered below is the "Beers"" data set containing 2410 US craft beers brewed in 558 breweries. Below is listed the first six beers in the data set, showing information about the ABV, IBU, style, and serving size, along with a Brewery ID which will be used to link this data to the brewery data.
 ```{r}
+#Required packages:
+library(ggplot2)
+library(fiftystater)
 #Read in the data
 beers <- read.csv('beers.csv')
 head(beers)
-str(beers)
 ```
 
-Additionally, I have a data set of these 558 breweries listing them by state.
+Additionally, below is the first six breweries in the "Breweries" data set, with information about the 558 breweries found in the Beers data set, listing the breweries by city and state, and with the common Brew_ID variable from the Beers data set.
 ```{r}
 breweries <-read.csv('breweries.csv')
 head(breweries)
-str(breweries)
 ```
-You can see in the following table the number of craft breweries in each state, with low-population states like the Dakotas and West Virginia only containing one brewery all the way up to Colorado with 47 breweries.  It appears the Pacific Northwest and the Midwest tend to have the most breweries per state, with notable exceptions like Texas and Massachusetts.
+You can see in the following table the number of craft breweries in each state, with low-population states like the Dakotas and West Virginia only containing one brewery all the way up to Colorado with 47 breweries.
 ```{r}
 # A table displaying the number of breweries in each state.
 table(breweries$State)
 ```
 
-In order to get more information about the individual beers brewed in each state, the two data sets were merged, cross-referencing them using the common element of brewery.
+It is common to hear that breweries are most popular in the Pacific Northwest and the Midwest, but it is difficult to see this in the above table, so below is a map of the number of breweries in each state, where the states with most breweries are bright red, and the states with the fewest breweries are a deep blue.  From the map, it is clear that there is a cluster of states on the west coast with the most breweries, but the bright red Colorado and Texas are notable exceptions in the middle of the country.  There is also a cluster in the Midwest and Northeast.  Unsurprisingly, the least craft breweries are found in the least populated parts of the United States in the middle of the country and the south.
+```{r}
+#This code changes the state abbreviations in the breweries data set to full state names in order to use the map package in ggplot2.
+# Code taken from 'https://favorableoutcomes.wordpress.com/2012/10/19/create-an-r-function-to-convert-state-codes-to-full-state-name/'
+breweries$State <- trimws(breweries$State)
+stateFromLower <-function(x) {
+  #read 52 state codes into local variable [includes DC (Washington D.C. and PR (Puerto Rico)]
+  st.codes<-data.frame(
+    state=as.factor(c("AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
+                      "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME",
+                      "MI", "MN", "MO", "MS",  "MT", "NC", "ND", "NE", "NH", "NJ", "NM",
+                      "NV", "NY", "OH", "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN",
+                      "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY")),
+    full=as.factor(c("alaska","alabama","arkansas","arizona","california","colorado",
+                     "connecticut","district of columbia","delaware","florida","georgia",
+                     "hawaii","iowa","idaho","illinois","indiana","kansas","kentucky",
+                     "louisiana","massachusetts","maryland","maine","michigan","minnesota",
+                     "missouri","mississippi","montana","north carolina","north dakota",
+                     "nebraska","new hampshire","new jersey","new mexico","nevada",
+                     "new york","ohio","oklahoma","oregon","pennsylvania","puerto rico",
+                     "rhode island","south carolina","south dakota","tennessee","texas",
+                     "utah","virginia","vermont","washington","wisconsin",
+                     "west virginia","wyoming"))
+  )
+  #create an nx1 data.frame of state codes from source column
+  st.x<-data.frame(state=x)
+  #match source codes with codes from 'st.codes' local variable and use to return the full state name
+  refac.x<-st.codes$full[match(st.x$state,st.codes$state)]
+  #return the full state names in the same order in which they appeared in the original source
+  return(refac.x)
+  
+}
+
+# Use the stateFromLower function to prepare data to map 
+breweries$stateful <- stateFromLower(breweries$State)
+statecount <- as.data.frame(table(breweries$stateful))
+names(statecount)[names(statecount)=="Freq"]<-"NumberBreweries"
+
+
+#Code adapted from 'https://cran.r-project.org/web/packages/fiftystater/vignettes/fiftystater.html'
+# Creating a map by number of variable
+ggplot(statecount, aes(map_id = Var1)) + 
+  geom_map(aes(fill = NumberBreweries), map = fifty_states) + 
+  expand_limits(x = fifty_states$long, y = fifty_states$lat) +
+  coord_map() +scale_fill_gradient(low="blue", high="red") +
+  scale_x_continuous(breaks = NULL) + 
+  scale_y_continuous(breaks = NULL) +
+  labs(x = "", y = "" ) +
+  theme(legend.position = "bottom",
+        panel.background = element_blank())
+```
+
+
+In order to get more information about the individual beers brewed in each state, the two data sets were merged, cross-referencing them using the common element of Brewery ID.
 ```{r}
 #Merge the 2 raw data files and do some basic cleaning
 names(breweries)[names(breweries)=="Brew_ID"]<-"Brewery_id"
@@ -42,7 +96,7 @@ beermerge <- beermerge[order(beermerge$State),]
 beermerge$State <- trimws(beermerge$State)
 ```
 
-The new data set has information about individual beers brewed in each state. As an example of the data available, these are the first six beers in the data set:
+The new data set has information about individual beers brewed in each state. As an example of the data available, below are the first six beers in the combined data set.
 ```{r}
 head(beermerge)
 ```
@@ -50,23 +104,23 @@ And the last six beers:
 ```{r}
 tail(beermerge)
 ```
-In the above rows, you may have noticed that the data set does not have complete information in every element.  "NA" represents information that was not recorded in the data set.  Below is a table of the number of "NAs" in each variable.
+In the above rows, it is apparent that the data set does not have complete information for every element. "NA" represents information that was not recorded in the data set. Below is a table of the number of "NAs" in each variable.
 ```{r}
 #Number of NAs in each variable
 colSums(is.na(beermerge))
 ```
-Almost half of the beers have missing information about their IBU (1005), and a few dozen have missing information regarding ABV (62), however there is still a large number of beers with information for both.
+Almost half, 1005, of the beers have missing information about their IBU, and a few dozen, 62, have missing information regarding ABV. It is likely that small craft breweries do not know or are not required to know the IBU of their beers, and there may be incomplete data gathering around ABV.
 
 #Analysis
 
-IBU is a measure of bitterness for beers.  The way hops are prepared and brewed into the beer can have a large impact on the flavor, with some beers like India Pale Ales with a very strong bitterness, and hence a higher IBU, and some beers like lagers with a very low bitterness.  Breweries in different states cater to different tastes for the bitterness of their beer. Below is the median IBU of craft beers by state.
+IBU is a measure of bitterness for beers.  The way hops are prepared and brewed into the beer can have a large impact on the flavor, with some beers like India Pale Ales tasting very bitter, and hence scoring a higher IBU, and some beers like lagers not tasting bitter at all, scoring a low IBU.  Breweries in different states cater to different tastes of bitterness. Below is the median IBU of craft beers by state.
 ```{r}
 #Median IBU by state
 stateIBU<-aggregate(IBU~State, beermerge,median, na.action=na.omit)
 stateIBU
 ```
 
-Below is a bar graph of the above table, which makes it easier to see that Maine has the highest median beer IBU, and West Virginia close behind. Remember, though, that West Virginia only has one brewery, so this is probably not representative of the tastes of most West Virginians.  It also shows that most states have a median IBU between 20 and 50. 
+Below is a bar graph of the above table, which makes it easier to see that Maine has the highest median beer IBU, and West Virginia close behind. Remember, though, that West Virginia only has one brewery, so this is probably not representative of the tastes of most West Virginians.  A surprising low outlier is Wisconsin, as Wisconsin is know for its beers, but these beers must be milder less bitter than in other states known for their beers like Colorado. This graph also shows that most states have a median IBU between 20 and 50, which suggests a maximum threshold of taste. 
 ```{r}
 #Bar graph of IBU
 library("ggplot2")
@@ -75,13 +129,13 @@ ggplot(data=stateIBU, aes(x=State, y=IBU, fill=IBU))+scale_fill_distiller(palett
                                   axis.text.x = element_text(angle=90, hjust=1,vjust=.5))
 ```
 
-Similarly, the level of alcohol content, measured by ABV varies from state to state.  Below is a table of the median alcohol content of craft beers by state.
+Similarly, the level of alcohol content, measured by ABV varies from state to state. Below is a table of the median alcohol content of craft beers by state.
 ```{r}
 stateABV<-aggregate(ABV~State, beermerge, median, na.action = na.omit)
 stateABV
 ```
 
-The below bar chart also shows the median ABV by state.  Utah is a low outlier, which may have something to do with the influence of the Mormon church in Utah and their prohibitions against alcohol.  Kentucky and the District of Columbia have the highest median ABV, followed closely by Maine, New Mexico and West Virginia.   
+The below bar graph also shows the median ABV by state. Utah is a low outlier, which may have roots in the influence of the Mormon church in Utah and their prohibitions against alcohol. Kentucky and the District of Columbia have the highest median ABV, followed closely by Maine, New Mexico and West Virginia.
 ```{r}
 #BarPlot of ABV by State
 ggplot(data=stateABV, aes(x=State, y=ABV, fill=ABV)) +
@@ -89,13 +143,13 @@ ggplot(data=stateABV, aes(x=State, y=ABV, fill=ABV)) +
                                   axis.text.x = element_text(angle=90,   hjust=1,vjust=.5))
 ```
 
-The fact that Maine showed up as a high outlier in both median IBU and ABV suggests that there may be some relationship between IBU and ABV. The below plot shows that there is indeed a positive linear relationship between the two, where the higher the bitterness of a beer, the higher its alcohol content.  There also appears to be a maximum threshold ABV of about 0.10 that most beers do not cross, with two outliers. This might be a limitation of the brewing process, or it might be that an ABV greater than 0.10 is too alcoholic and and has an unpalatable flavor. IBU also seems to be clustered, with a significant drop-off after an IBU of 50.
+The fact that Maine showed up as a high outlier in both median IBU and ABV suggests that there may be some relationship between IBU and ABV. The below plot shows that there is indeed a positive linear relationship between the two, where the higher the bitterness of a beer, the higher its alcohol content. However, there also appears to be a maximum threshold ABV of about 0.10 that most beers do not cross, with two high outliers. This might be a limitation of the brewing process, or it might be that an ABV greater than 0.10 is too alcoholic and and has an unpalatable flavor. IBU also seems to be clustered, with a significant drop-off after an IBU of 50.
 ```{r}
 #ABV vs. IBU
 ggplot(data=beermerge,aes(IBU,ABV))+geom_point(color="blue")+geom_smooth(method=lm,color="red")
 ```
 
-Those high ABV outliers are a Quadrupel from Colorado, and an English Barleywine from Kentucky, both sporting an alcohol content more usually associated with wine than beer.
+Out of curiosity, those high ABV outliers are a Quadrupel from Colorado, and an English Barleywine from Kentucky, both sporting an alcohol content more usually associated with wine than beer.
 ```{r}
 beermerge[which(beermerge$ABV > 0.12),c(4,6, 8,9,10)]
 ```
@@ -103,4 +157,4 @@ beermerge[which(beermerge$ABV > 0.12),c(4,6, 8,9,10)]
 
 #Conclusion
 
-Brewery data from all fifty states and the District of Columbia show a large variety of craft beers from many breweries. Breweries are most concentrated in the Pacific Northwest, though all states have at least one brewery in this data set. There are a variety of regional tastes in alcohol content and bitterness around the country, but in general they fall within similar ranges. There does appear to be a correlation between more bitter beers and higher alcohol content, though, again, most beers fall within a fairly tight cluster of values for both.  
+Brewery data from all fifty states and the District of Columbia show a large variety of craft beers from many breweries. Breweries are most frequent on the coasts, though all states have at least one craft brewery. There are a variety of regional tastes in alcohol content and bitterness around the country, but in general they fall within similar ranges. There does appear to be a correlation between more bitter beers and higher alcohol content, though, again, most beers fall within a fairly tight cluster of values for both. Altogether, the large number of craft breweries and the many craft beers they create is a diverse market, catering to a large variety of tastes.
