@@ -4,13 +4,13 @@
 * Last updated: 6/27/2017
 
 # Raw Data Files
-Beers
-* Filename: beers.csv
-* Description: A list of 2410 US craft beers with information about brewery, style, serving size, ABV and IBU. 
+* Beers
+1. Filename: beers.csv
+2. Description: A list of 2410 US craft beers with information about brewery, style, serving size, ABV and IBU. 
 
-Breweries
-* Filename breweries.csv
-* Description: A list of 558 US breweries with information about the city and state of each brewery.
+* Breweries
+1. Filename breweries.csv
+2. Description: A list of 558 US breweries with information about the city and state of each brewery.
 
 Relationship: "Brewery_id" in beers.csv and "Brew_ID" in breweries.csv is the common variable.
 
