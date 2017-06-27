@@ -16,19 +16,20 @@ Gathered below is the "Beers"" data set containing 2410 US craft beers brewed in
 #Required packages:
 library(ggplot2)
 library(fiftystater)
-#Read in the data
+#Read in the Beers data
 beers <- read.csv('beers.csv')
 head(beers)
 ```
 
 Additionally, below is the first six breweries in the "Breweries" data set, with information about the 558 breweries found in the Beers data set, listing the breweries by city and state, and with the common Brew_ID variable from the Beers data set.
 ```{r}
+#Read in the breweries data
 breweries <-read.csv('breweries.csv')
 head(breweries)
 ```
 You can see in the following table the number of craft breweries in each state, with low-population states like the Dakotas and West Virginia only containing one brewery all the way up to Colorado with 47 breweries.
 ```{r}
-# A table displaying the number of breweries in each state.
+# Generate a table displaying the number of breweries in each state.
 table(breweries$State)
 ```
 
@@ -65,14 +66,14 @@ stateFromLower <-function(x) {
   
 }
 
-# Use the stateFromLower function to prepare data to map 
+# Use the stateFromLower function to prepare data for color map 
 breweries$stateful <- stateFromLower(breweries$State)
 statecount <- as.data.frame(table(breweries$stateful))
 names(statecount)[names(statecount)=="Freq"]<-"NumberBreweries"
 
 
+# Creating a map colored by number breweries
 #Code adapted from 'https://cran.r-project.org/web/packages/fiftystater/vignettes/fiftystater.html'
-# Creating a map by number of variable
 ggplot(statecount, aes(map_id = Var1)) + 
   geom_map(aes(fill = NumberBreweries), map = fifty_states) + 
   expand_limits(x = fifty_states$long, y = fifty_states$lat) +
