@@ -4,7 +4,7 @@ June 26, 2017
 
 #Introduction
 
-In recent decades, the craft beer market in the united states has exploded into an incredibly diverse landscape, with hundreds of different breweries all across the country brewing thousands of types of craft beers. As breweries have proliferated, states have developed regional tastes and breweries have reacted by specializing.  Below is an analysis of 2410 US craft beers brewed in 558 breweries across all 50 states and the District of Columbia.
+In recent decades, the craft beer market in the United States has greatly diversified, with hundreds of different breweries all across the country brewing thousands of types of craft beers. As breweries have proliferated, states have developed regional tastes and breweries have reacted by specializing.  Below is an analysis of 2410 US craft beers brewed in 558 breweries across all 50 states and the District of Columbia.
 
 Gathered below is the "Beers"" data set containing 2410 US craft beers brewed in 558 breweries. Below is listed the first six beers in the data set, showing information about the ABV, IBU, style, and serving size, along with a Brewery ID which will be used to link this data to the brewery data.
 
@@ -67,7 +67,7 @@ table(breweries$State)
 ##   6  29  25   5   4   1   3  28   4  16  10  23  20   1   4
 ```
 
-It is common to hear that breweries are most popular in the Pacific Northwest and the midwest, but it is difficult to see this in the above table, so below is a map of the number of breweries in each state, where the states with most breweries are bright red, and the states with the fewest breweries are a deep blue.  From the map, it is clear that there is a cluster of states on the west coast with the most breweries, but the bright red Colorado and Texas are notable exceptions in the middle of the country.  There is also a cluster in the Midwest and Northeast.  Unsurprisingly, the least craft breweries are found in the least populated parts of the United States in the middle of the country and the south.
+It is common to hear that breweries are most popular in the Pacific Northwest and the Midwest, but it is difficult to see this in the above table, so below is a map of the number of breweries in each state, where the states with most breweries are bright red, and the states with the fewest breweries are a deep blue.  From the map, it is clear that there is a cluster of states on the west coast with the most breweries, but the bright red Colorado and Texas are notable exceptions in the middle of the country.  There is also a cluster in the Midwest and Northeast.  Unsurprisingly, the least craft breweries are found in the least populated parts of the United States in the middle of the country and the south.
 
 ```r
 #This code changes the state abbreviations in the breweries data set to full state names in order to use the map package in ggplot2.
@@ -193,7 +193,7 @@ tail(beermerge)
 ## 2397 Pinedale    WY  wyoming
 ## 2398 Pinedale    WY  wyoming
 ```
-In the above rows, it is apparant that the data set does not have complete information for every element. "NA" represents information that was not recorded in the data set. Below is a table of the number of "NAs" in each variable.
+In the above rows, it is apparent that the data set does not have complete information for every element. "NA" represents information that was not recorded in the data set. Below is a table of the number of "NAs" in each variable.
 
 ```r
 #Number of NAs in each variable
@@ -210,7 +210,7 @@ Almost half, 1005, of the beers have missing information about their IBU, and a 
 
 #Analysis
 
-IBU is a measure of bitterness for beers.  The way hops are prepared and brewed into the beer can have a large impact on the flavor, with some beers like India Pale Ales tasting very bitter, and hence scoring a higher IBU, and some beers like lagers not tasting bitter at all, scoring a low IBU.  Breweries in different states cater to different tastes of bitterness. Below is the median IBU of craft beers by state.
+The International Bitterness Unit (IBU) is a measure of bitterness for beers.  The way hops are prepared and brewed into the beer can have a large impact on the flavor, with some beers like India Pale Ales tasting very bitter, and hence scoring a higher IBU, and some beers like lagers not tasting bitter at all, scoring a low IBU.  Breweries in different states cater to different tastes of bitterness. Below is the median IBU of craft beers by state.
 
 ```r
 #Median IBU by state
@@ -272,19 +272,21 @@ stateIBU
 ## 50    WY 21.0
 ```
 
-Below is a bar graph of the above table, which makes it easier to see that Maine has the highest median beer IBU, and West Virginia close behind. Remember, though, that West Virginia only has one brewery, so this is probably not representative of the tastes of most West Virginians.  A surprising low outlier is Wisconsin, as Wisconsin is know for its beers, but these beers must be milder less bitter than in other states known for their beers like Colorado. This graph also shows that most states have a median IBU between 20 and 50, which suggests a maximum threshold of taste. 
+Below is a bar graph of the above table, which makes it easier to see that Maine has the highest median beer IBU, and West Virginia close behind. Remember, though, that West Virginia only has one brewery, so this is probably not representative of the tastes of most West Virginians.  A surprising low outlier is Wisconsin, as Wisconsin is know for its beers, but these beers must be milder or less bitter than in other states known for their beers like Colorado. This graph also shows that most states have a median IBU between 20 and 50, which suggests a maximum threshold of taste. 
 
 ```r
 #Bar graph of IBU
 library("ggplot2")
-ggplot(data=stateIBU, aes(x=State, y=IBU, fill=IBU))+scale_fill_distiller(palette="Reds")+
-  geom_bar(stat="identity")+theme(text = element_text(size=10),
-                                  axis.text.x = element_text(angle=90, hjust=1,vjust=.5))
+ggplot(data=stateIBU, aes(x=State, y=IBU, fill=IBU)) +
+    scale_fill_distiller(palette="Reds") +
+    geom_bar(stat="identity") +
+    theme(text = element_text(size=10),
+          axis.text.x = element_text(angle=90, hjust=1,vjust=.5))
 ```
 
 ![](BeerReport_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
-Similarly, the level of alcohol content, measured by ABV varies from state to state. Below is a table of the median alcohol content of craft beers by state.
+Similarly, the level of alcohol content, measured by Alcohol by Volume (ABV), varies from state to state. Below is a table of the median alcohol content of craft beers by state.
 
 ```r
 stateABV<-aggregate(ABV~State, beermerge, median, na.action = na.omit)
@@ -351,8 +353,9 @@ The below bar graph also shows the median ABV by state. Utah is a low outlier, w
 ```r
 #BarPlot of ABV by State
 ggplot(data=stateABV, aes(x=State, y=ABV, fill=ABV)) +
-  geom_bar(stat="identity")+theme(text = element_text(size=10),
-                                  axis.text.x = element_text(angle=90,   hjust=1,vjust=.5))
+    geom_bar(stat="identity") +
+    theme(text = element_text(size=10),
+          axis.text.x = element_text(angle=90, hjust=1,vjust=.5))
 ```
 
 ![](BeerReport_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
@@ -361,7 +364,9 @@ The fact that Maine showed up as a high outlier in both median IBU and ABV sugge
 
 ```r
 #ABV vs. IBU
-ggplot(data=beermerge,aes(IBU,ABV))+geom_point(color="blue")+geom_smooth(method=lm,color="red")
+ggplot(data=beermerge,aes(IBU,ABV)) +
+    geom_point(color="blue") +
+    geom_smooth(method=lm,color="red")
 ```
 
 ```
@@ -377,13 +382,16 @@ ggplot(data=beermerge,aes(IBU,ABV))+geom_point(color="blue")+geom_smooth(method=
 Out of curiosity, those high ABV outliers are a Quadrupel from Colorado, and an English Barleywine from Kentucky, both sporting an alcohol content more usually associated with wine than beer.
 
 ```r
-beermerge[which(beermerge$ABV > 0.12),c(4,6, 8,9,10)]
+beermerge[which(beermerge$ABV > 0.12),c(2,4,6, 8,9,10)]
 ```
 
 ```
-##       ABV              Style               BreweryName       City State
-## 375 0.128   Quadrupel (Quad)   Upslope Brewing Company    Boulder    CO
-## 8   0.125 English Barleywine Against the Grain Brewery Louisville    KY
+##                                                 BeerName   ABV
+## 375 Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale 0.128
+## 8                                         London Balling 0.125
+##                  Style               BreweryName       City State
+## 375   Quadrupel (Quad)   Upslope Brewing Company    Boulder    CO
+## 8   English Barleywine Against the Grain Brewery Louisville    KY
 ```
 
 

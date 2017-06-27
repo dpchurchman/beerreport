@@ -113,23 +113,25 @@ Almost half, 1005, of the beers have missing information about their IBU, and a 
 
 #Analysis
 
-IBU is a measure of bitterness for beers.  The way hops are prepared and brewed into the beer can have a large impact on the flavor, with some beers like India Pale Ales tasting very bitter, and hence scoring a higher IBU, and some beers like lagers not tasting bitter at all, scoring a low IBU.  Breweries in different states cater to different tastes of bitterness. Below is the median IBU of craft beers by state.
+The International Bitterness Unit (IBU) is a measure of bitterness for beers.  The way hops are prepared and brewed into the beer can have a large impact on the flavor, with some beers like India Pale Ales tasting very bitter, and hence scoring a higher IBU, and some beers like lagers not tasting bitter at all, scoring a low IBU.  Breweries in different states cater to different tastes of bitterness. Below is the median IBU of craft beers by state.
 ```{r}
 #Median IBU by state
 stateIBU<-aggregate(IBU~State, beermerge,median, na.action=na.omit)
 stateIBU
 ```
 
-Below is a bar graph of the above table, which makes it easier to see that Maine has the highest median beer IBU, and West Virginia close behind. Remember, though, that West Virginia only has one brewery, so this is probably not representative of the tastes of most West Virginians.  A surprising low outlier is Wisconsin, as Wisconsin is know for its beers, but these beers must be milder less bitter than in other states known for their beers like Colorado. This graph also shows that most states have a median IBU between 20 and 50, which suggests a maximum threshold of taste. 
+Below is a bar graph of the above table, which makes it easier to see that Maine has the highest median beer IBU, and West Virginia close behind. Remember, though, that West Virginia only has one brewery, so this is probably not representative of the tastes of most West Virginians.  A surprising low outlier is Wisconsin, as Wisconsin is know for its beers, but these beers must be milder or less bitter than in other states known for their beers like Colorado. This graph also shows that most states have a median IBU between 20 and 50, which suggests a maximum threshold of taste. 
 ```{r}
 #Bar graph of IBU
 library("ggplot2")
-ggplot(data=stateIBU, aes(x=State, y=IBU, fill=IBU))+scale_fill_distiller(palette="Reds")+
-  geom_bar(stat="identity")+theme(text = element_text(size=10),
-                                  axis.text.x = element_text(angle=90, hjust=1,vjust=.5))
+ggplot(data=stateIBU, aes(x=State, y=IBU, fill=IBU)) +
+    scale_fill_distiller(palette="Reds") +
+    geom_bar(stat="identity") +
+    theme(text = element_text(size=10),
+          axis.text.x = element_text(angle=90, hjust=1,vjust=.5))
 ```
 
-Similarly, the level of alcohol content, measured by ABV varies from state to state. Below is a table of the median alcohol content of craft beers by state.
+Similarly, the level of alcohol content, measured by Alcohol by Volume (ABV), varies from state to state. Below is a table of the median alcohol content of craft beers by state.
 ```{r}
 stateABV<-aggregate(ABV~State, beermerge, median, na.action = na.omit)
 stateABV
@@ -139,19 +141,22 @@ The below bar graph also shows the median ABV by state. Utah is a low outlier, w
 ```{r}
 #BarPlot of ABV by State
 ggplot(data=stateABV, aes(x=State, y=ABV, fill=ABV)) +
-  geom_bar(stat="identity")+theme(text = element_text(size=10),
-                                  axis.text.x = element_text(angle=90,   hjust=1,vjust=.5))
+    geom_bar(stat="identity") +
+    theme(text = element_text(size=10),
+          axis.text.x = element_text(angle=90, hjust=1,vjust=.5))
 ```
 
 The fact that Maine showed up as a high outlier in both median IBU and ABV suggests that there may be some relationship between IBU and ABV. The below plot shows that there is indeed a positive linear relationship between the two, where the higher the bitterness of a beer, the higher its alcohol content. However, there also appears to be a maximum threshold ABV of about 0.10 that most beers do not cross, with two high outliers. This might be a limitation of the brewing process, or it might be that an ABV greater than 0.10 is too alcoholic and and has an unpalatable flavor. IBU also seems to be clustered, with a significant drop-off after an IBU of 50.
 ```{r}
 #ABV vs. IBU
-ggplot(data=beermerge,aes(IBU,ABV))+geom_point(color="blue")+geom_smooth(method=lm,color="red")
+ggplot(data=beermerge,aes(IBU,ABV)) +
+    geom_point(color="blue") +
+    geom_smooth(method=lm,color="red")
 ```
 
 Out of curiosity, those high ABV outliers are a Quadrupel from Colorado, and an English Barleywine from Kentucky, both sporting an alcohol content more usually associated with wine than beer.
 ```{r}
-beermerge[which(beermerge$ABV > 0.12),c(4,6, 8,9,10)]
+beermerge[which(beermerge$ABV > 0.12),c(2,4,6, 8,9,10)]
 ```
 
 
