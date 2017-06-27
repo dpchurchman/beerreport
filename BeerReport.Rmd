@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Beers acros the USA"
+title: "Analysis of Craft Beers across the USA"
 author: "David Churchman"
 date: "June 26, 2017"
 output:
