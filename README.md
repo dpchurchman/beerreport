@@ -1,7 +1,5 @@
 # Craft Beer in the United States
-Completed for Case Study 1 of MSDS 6306.
-Author: David Churchman
-Date: 6/27/2017
+Completed for Case Study 1 of MSDS 6306 by David Churchman, 6/27/2017
 
 # Raw Data Files
 Beers
