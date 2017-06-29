@@ -15,8 +15,11 @@
 Relationship: "Brewery_id" in beers.csv and "Brew_ID" in breweries.csv is the common variable.
 
 # Analysis Files
+Using R markdown, the BeerReport code merges beers.csv and breweries.csv and conducts a short analysis.  The md file is most readable on GitHub, and the html file is best suited for publication. The BeerReport code uses CreateMap.R to create a map of the United States by number of breweries.
+
 * BeerReport.md
 * BeerReport.Rmd
 * BeerReport.html
-* Description: Using R markdown, this code merges Beers and Breweries and conducts a short analysis.  The md file is most readable on GitHub, and the html file is best suited for publication.
+* CreateMap.R
+
 
