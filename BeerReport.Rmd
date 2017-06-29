@@ -3,9 +3,9 @@ title: "Analysis of Craft Beers across the USA"
 author: "David Churchman"
 date: "June 26, 2017"
 output:
+  pdf_document: default
   html_document:
     keep_md: yes
-  pdf_document: default
 ---
 
 #Introduction
