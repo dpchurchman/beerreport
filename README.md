@@ -4,22 +4,27 @@
 * Last updated: 6/27/2017
 
 # Raw Data Files
-* Beers
-1. Filename: beers.csv
-2. Description: A list of 2410 US craft beers with information about brewery, style, serving size, ABV and IBU. 
+Beers
+* Filename: beers.csv
+* Description: A list of 2410 US craft beers with information about brewery, style, serving size, ABV and IBU. 
 
-* Breweries
-1. Filename breweries.csv
-2. Description: A list of 558 US breweries with information about the city and state of each brewery.
+Breweries
+* Filename breweries.csv
+* Description: A list of 558 US breweries with information about the city and state of each brewery.
 
 Relationship: "Brewery_id" in beers.csv and "Brew_ID" in breweries.csv is the common variable.
 
 # Analysis Files
-Using R markdown, the BeerReport code merges beers.csv and breweries.csv and conducts a short analysis.  The md file is most readable on GitHub, and the html file is best suited for publication. The BeerReport code uses CreateMap.R to create a map of the United States by number of breweries.
+The BeerReport code merges beers.csv and breweries.csv and conducts a short analysis, and is included in markdown, Rmarkdown, html and pdf format. As html is not fully rendered on github, BeerReport.pdf offerst the cleanest viewing without downloading a file.  The BeerReport code uses BeerMerge.R to merge and clean beers.csv and breweries.csv and uses CreateMap.R to create a map of the United States shaded by number of breweries.
 
+Report in different formats
 * BeerReport.md
 * BeerReport.Rmd
 * BeerReport.html
+* BeerReport.pdf
+
+Code modules used in BeerReport
+* BeerMerge.R
 * CreateMap.R
 
 
