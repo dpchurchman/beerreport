@@ -1,11 +1,11 @@
 ---
-title: "Analysis of Craft Beers across the USA"
+title: "Analysis of Craft Beers across the United States"
 author: "David Churchman"
 date: "June 26, 2017"
 output:
-  pdf_document: default
   html_document:
     keep_md: yes
+  pdf_document: default
 ---
 
 #Introduction
@@ -28,7 +28,7 @@ Additionally, below is the first six breweries in the "Breweries" data set, with
 breweries <-read.csv('breweries.csv')
 head(breweries)
 ```
-#Analysis
+#Methods and Results
 The following table is the number of craft breweries in each state. The table shows low-population states like the Dakotas and West Virginia only containing one brewery, and Colorado jumps out as a high outlier with 47 breweries.
 ```{r}
 # Generate a table displaying the number of breweries in each state.
@@ -42,12 +42,7 @@ source('CreateMap.R', print.eval = TRUE)
 Having established where craft breweries are most common, this report will proceed to analyze differences in state tastes for bitterness and alcohol content in craft beers.  In order to get more information about the individual beers brewed in each state, the below code merges the "Beers" and "Breweries" data sets, cross-referencing them using the common element of Brewery ID.
 ```{r}
 #Merge the 2 raw data files and do some basic cleaning
-names(breweries)[names(breweries)=="Brew_ID"]<-"Brewery_id"
-beermerge<-merge(beers, breweries, by = "Brewery_id")
-names(beermerge)[names(beermerge)=="Name.x"] <- "BeerName"
-names(beermerge)[names(beermerge)=="Name.y"] <- "BreweryName"
-beermerge <- beermerge[order(beermerge$State),]
-beermerge$State <- trimws(beermerge$State)
+source('BeerMerge.R')
 ```
 
 The new data set has information about individual beers brewed in each state. As an example of the data available, below are the first six beers in the combined data set.
@@ -74,8 +69,7 @@ stateIBU
 
 Below is a bar graph of the above table, which makes it easier to see that Maine has the highest median beer IBU, and West Virginia is close behind. West Virginia, however, has only has one brewery, so this is probably not representative of the tastes of most West Virginians. A surprising low outlier is Wisconsin, as Wisconsin is a state know for its beers, but these beers must be milder or less bitter than in other states known for their beers like Colorado. This graph also shows that most states have a median IBU between 20 and 50, which suggests a maximum threshold for bitterness. 
 ```{r}
-#Bar graph of IBU
-library("ggplot2")
+#Barplot of IBU by state
 ggplot(data=stateIBU, aes(x=State, y=IBU, fill=IBU)) +
     scale_fill_distiller(palette="Reds") +
     geom_bar(stat="identity") +
@@ -85,13 +79,14 @@ ggplot(data=stateIBU, aes(x=State, y=IBU, fill=IBU)) +
 
 Similarly, the level of alcohol content, measured by Alcohol by Volume (ABV), varies from state to state. Below is a table of the median alcohol content of craft beers by state.
 ```{r}
+#Median ABV by state
 stateABV<-aggregate(ABV~State, beermerge, median, na.action = na.omit)
 stateABV
 ```
 
 The below bar graph also shows the median ABV by state. Utah is a low outlier, which may have roots in the influence of the Mormon church in Utah and their prohibitions against alcohol. Kentucky and the District of Columbia have the highest median ABV, followed closely by Maine, New Mexico and West Virginia.
 ```{r}
-#BarPlot of ABV by State
+#BarPlot of ABV by state
 ggplot(data=stateABV, aes(x=State, y=ABV, fill=ABV)) +
     geom_bar(stat="identity") +
     theme(text = element_text(size=10),
@@ -100,7 +95,7 @@ ggplot(data=stateABV, aes(x=State, y=ABV, fill=ABV)) +
 
 Maine appearing as a high outlier in both median IBU and ABV suggests that there may be some relationship between IBU and ABV. The below plot shows that there is indeed a positive linear relationship between the two, where the higher the bitterness of a beer, the higher its alcohol content. However, there also appears to be a maximum threshold ABV of about 0.10 that most beers do not cross, with two high outliers. This might be a limitation of the brewing process, or it might be that an ABV greater than 0.10 is too alcoholic and and has an unpalatable flavor. IBU also seems to be clustered, with a significant drop-off after an IBU of 50 and even less cpmmon after 100.
 ```{r}
-#ABV vs. IBU
+#ABV vs. IBU scatterplot
 ggplot(data=beermerge,aes(IBU,ABV)) +
     geom_point(color="blue") +
     geom_smooth(method=lm,color="red")
@@ -108,10 +103,11 @@ ggplot(data=beermerge,aes(IBU,ABV)) +
 
 Out of curiosity, those high ABV outliers are a Quadrupel from Colorado, and an English Barleywine from Kentucky, both sporting an alcohol content more usually associated with wine than beer.
 ```{r}
+#Finding ABV >0.12 for high outliers
 beermerge[which(beermerge$ABV > 0.12),c(2,4,6, 8,9,10)]
 ```
 
 
 #Conclusion
 
-Brewery data from all fifty states and the District of Columbia show a large variety of craft beers from many breweries. Breweries are most frequent on the coasts, though all states have at least one craft brewery. There are a variety of regional tastes in alcohol content and bitterness around the country, but in general they fall within similar ranges. There does appear to be a correlation between more bitter beers and higher alcohol content, though, again, most beers fall within a fairly tight cluster of values for both. Altogether, the large number of craft breweries and the many craft beers they create is a diverse market, catering to a large variety of tastes across the United States.
+Brewery data from all fifty states and the District of Columbia show a large variety of craft beers from many breweries. Breweries are most frequent on the coasts, though all states have at least one craft brewery. There are a variety of regional tastes in alcohol content and bitterness around the country, but in general they fall within similar ranges. There is a correlation between more bitter beers and higher alcohol content, though, again, most beers fall within a fairly tight cluster of values for both. Altogether, the large number of craft breweries and the many craft beers they create is a diverse market, catering to a large variety of tastes across the United States.
