@@ -1,11 +1,11 @@
 ---
-title: "Analysis of Craft Beers across the United States"
+title: "Analysis of Craft Beer across the United States"
 author: "David Churchman"
-date: "June 26, 2017"
+date: "June 29, 2017"
 output:
+  pdf_document: default
   html_document:
     keep_md: yes
-  pdf_document: default
 ---
 
 #Introduction

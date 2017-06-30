@@ -1,6 +1,6 @@
-# Analysis of Craft Beers across the United States
+# Analysis of Craft Beer across the United States
 David Churchman  
-June 26, 2017  
+June 29, 2017  
 
 #Introduction
 
