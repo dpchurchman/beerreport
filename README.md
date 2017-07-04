@@ -14,6 +14,11 @@ Breweries
 
 Relationship: "Brewery_id" in beers.csv and "Brew_ID" in breweries.csv is the common variable.
 
+# Clean Data File
+Beermerge
+* Filename: [beermerge.csv](beermerge.csv)
+* Description: A merged filed of Beers and Breweries, by brewery ID, with basic cleaning completed by [BeerMerge.R](BeerMerge.R) make file.
+
 # Analysis Files
 The BeerReport code merges beers.csv and breweries.csv and conducts a short analysis, and is included in markdown, Rmarkdown, html and pdf format. As html is not fully rendered on github, BeerReport.pdf offerst the cleanest viewing without downloading a file.  The BeerReport code uses BeerMerge.R to merge and clean beers.csv and breweries.csv and uses CreateMap.R to create a map of the United States shaded by number of breweries.
 
