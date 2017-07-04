@@ -9,3 +9,6 @@ names(beermerge)[names(beermerge)=="Name.y"] <- "BreweryName"
 beermerge <- beermerge[order(beermerge$State),]
 #Trim extra white space
 beermerge$State <- trimws(beermerge$State)
+#Export merged and cleaned CSV file
+write.csv(beermerge, file='beermerge.csv' )
+
